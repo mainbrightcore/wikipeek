@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WikiPeek Privacy Policy</title>
+  <style>
+    /* Base */
+    :root {
+      --bg: #f9fafb;
+      --sidebar: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --brand: #2563eb;
+      --border: #e5e7eb;
+      --radius: 12px;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+    }
+
+    /* Sidebar */
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      width: 240px;
+      box-sizing: border-box;
+    }
+    nav h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    nav li {
+      margin-bottom: 8px;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    nav a.active {
+      color: var(--brand);
+      font-weight: 600;
+    }
+
+    /* Content */
+    main {
+      flex: 1;
+      padding: 40px;
+      max-width: 800px;
+    }
+    section {
+      margin-bottom: 60px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    section:last-child {
+      border-bottom: none;
+    }
+    section h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    section h2 {
+      font-size: 20px;
+      margin: 24px 0 12px;
+    }
+    section p {
+      color: var(--muted);
+      max-width: 70ch;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Nav -->
+  <nav>
+    <h2>Privacy Policy</h2>
+    <ul>
+      <li><a href="#intro" class="active">Introduction</a></li>
+      <li><a href="#data">Data We Collect</a></li>
+      <li><a href="#usage">How We Use Data</a></li>
+      <li><a href="#permissions">Permissions</a></li>
+      <li><a href="#thirdparties">Third Parties</a></li>
+      <li><a href="#changes">Policy Changes</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <section id="intro">
+      <h1>Introduction</h1>
+      <p>
+        WikiPeek is a Chrome extension that gives you instant Wikipedia-powered previews for any term you hover over or select. 
+        We respect your privacy and designed WikiPeek to work locally in your browser without collecting personally identifiable information.
+      </p>
+    </section>
+
+    <section id="data">
+      <h2>Data We Collect</h2>
+      <p>
+        WikiPeek does not collect or transmit personal data such as your name, email address, or browsing history.  
+        The only information stored is minimal local settings (e.g., your preferred mode, hover delay, or whether images are enabled) 
+        using Chrome’s storage API. These settings remain on your device and are never shared with us.
+      </p>
+    </section>
+
+    <section id="usage">
+      <h2>How We Use Data</h2>
+      <p>
+        Stored preferences are used only to improve your experience — for example, remembering that you prefer Cursor Mode by default 
+        or caching recent previews for faster results. No data is sent to external servers except requests to Wikipedia to retrieve article summaries.
+      </p>
+    </section>
+
+    <section id="permissions">
+      <h2>Permissions</h2>
+      <p>
+        WikiPeek requests the following Chrome permissions:
+      </p>
+      <ul>
+        <li><b>Storage</b>: to save your extension settings (e.g., mode, hover delay).</li>
+        <li><b>ActiveTab</b>: to display previews on the page you are currently viewing, when you select or hover over text.</li>
+        <li><b>Scripting</b>: to inject the tooltip and floating control hub into the current page, allowing previews to display.</li>
+        <li><b>Host access (wikipedia.org)</b>: to fetch summaries and images directly from Wikipedia’s public API.</li>
+      </ul>
+      <p>
+        These permissions are essential for the single purpose of providing Wikipedia previews. We do not request access to unnecessary data.
+      </p>
+    </section>
+
+    <section id="thirdparties">
+      <h2>Third Parties</h2>
+      <p>
+        WikiPeek relies only on Wikipedia (via <code>wikipedia.org</code>) to provide article summaries and thumbnails. 
+        No third-party analytics, advertising networks, or trackers are included in the extension.
+      </p>
+    </section>
+
+    <section id="changes">
+      <h2>Policy Changes</h2>
+      <p>
+        If this privacy policy changes, the updated version will be published on this page. 
+        Material changes will be highlighted in the Chrome Web Store listing and release notes. 
+        Your continued use of WikiPeek after updates means you accept the revised policy.
+      </p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>
+        If you have questions about this policy or how WikiPeek works, please reach out to us at:  
+        <b>wikipeek.extension@gmail.com</b>
+      </p>
+    </section>
+  </main>
+
+  <script>
+    // Scroll spy for sidebar nav
+    const links = document.querySelectorAll("nav a");
+    const sections = document.querySelectorAll("main section");
+
+    window.addEventListener("scroll", () => {
+      let current = "";
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        if (pageYOffset >= sectionTop) {
+          current = section.getAttribute("id");
+        }
+      });
+
+      links.forEach(link => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === "#" + current) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
