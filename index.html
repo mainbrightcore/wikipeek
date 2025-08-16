@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>WikiPeek — Instant Wikipedia Previews Anywhere</title>
+    <meta name="description" content="Get instant Wikipedia-powered summaries for any text you hover or select. Two modes, lightning-fast previews, and a beautiful floating control hub." />
+    <meta property="og:title" content="WikiPeek — Instant Wikipedia Previews Anywhere" />
+    <meta property="og:description" content="Hover. Select. Learn. Wikipedia previews without leaving the page." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/social-card.png" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="icon" href="icon48.png" />
+    <style>
+        /* ---------- Base & Theme ---------- */
+        :root {
+            --bg: #0b1020;
+            --bg-soft: #0f1530;
+            --card: rgba(255, 255, 255, .06);
+            --card-strong: rgba(255, 255, 255, .12);
+            --text: #eaf0ff;
+            --muted: #b8c2ffcc;
+            --brand: #3b82f6;
+            --brand-2: #22d3ee;
+            --ring: #8ab6ff66;
+            --shadow: 0 10px 35px rgba(0, 0, 0, .35);
+            --radius: 16px;
+            --radius-sm: 12px;
+            --radius-lg: 22px;
+            --maxw: 1100px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+            color: var(--text);
+            background:
+                radial-gradient(1200px 700px at 15% -10%, #1d2b78 0%, transparent 55%),
+                radial-gradient(900px 500px at 120% 10%, #0aa6c2 0%, transparent 50%),
+                linear-gradient(180deg, #090d1a 0%, #060913 100%);
+            background-attachment: fixed;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ---------- Header ---------- */
+        header.site {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px) saturate(120%);
+            background: linear-gradient(180deg, rgba(11, 16, 32, .85), rgba(11, 16, 32, .45));
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            letter-spacing: .2px;
+        }
+
+        .logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: inline-grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: #fff;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, .45);
+        }
+
+        .nav a.cta {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            box-shadow: 0 10px 26px rgba(34, 211, 238, .25);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .nav a.ghost {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .04);
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            padding: 72px 0 40px;
+            text-align: center;
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .04);
+        }
+
+        h1.hero-title {
+            font-size: clamp(32px, 4.6vw, 56px);
+            line-height: 1.05;
+            margin: 16px auto 12px;
+            max-width: 900px;
+            letter-spacing: -0.6px;
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: clamp(15px, 2.2vw, 18px);
+            max-width: 780px;
+            margin: 0 0;
+            margin-bottom: 10px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 18px;
+            border-radius: 14px;
+            font-weight: 700;
+            letter-spacing: .2px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .06);
+            transition: transform .05s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .button.primary {
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: #071229;
+            border-color: transparent;
+        }
+
+        /* ---------- Feature Cards ---------- */
+        section {
+            padding: 56px 0;
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(12, 1fr);
+        }
+
+        .card {
+            grid-column: span 6;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h3 {
+            margin: 8px 0 4px;
+            letter-spacing: -.2px;
+        }
+
+        .card p {
+            margin: 6px 0 0;
+            color: var(--muted);
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #0a1a33;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #a5b4fc, #67e8f9);
+        }
+
+        .illus {
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, .18);
+            aspect-ratio: 16/9;
+            display: grid;
+            place-items: center;
+            color: #9fb8ffcc;
+            background: radial-gradient(600px 260px at 50% -20%, rgba(59, 130, 246, .28), transparent 60%);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ---------- How It Works ---------- */
+        .steps {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(12, 1fr);
+        }
+
+        .step {
+            grid-column: span 4;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: #071229;
+            margin-bottom: 8px;
+        }
+
+        /* ---------- Shortcuts ---------- */
+        .kbd {
+            display: inline-block;
+            min-width: 38px;
+            text-align: center;
+            padding: 6px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, .22);
+            background: rgba(255, 255, 255, .06);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
+            font-weight: 700;
+        }
+
+        .table {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1.4fr 2fr;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: var(--radius);
+            padding: 14px;
+        }
+
+        .row {
+            display: contents;
+        }
+
+        .cell {
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .row:last-child .cell {
+            border-bottom: 0;
+        }
+
+        /* ---------- FAQs (details/summary for a11y) ---------- */
+        .faq {
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .05);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+        }
+
+        details {
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            padding: 10px 0;
+        }
+
+        details:last-child {
+            border-bottom: 0;
+        }
+
+        summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .chev {
+            transition: transform .2s ease;
+        }
+
+        details[open] .chev {
+            transform: rotate(90deg);
+        }
+
+        details p {
+            margin: 8px 0 0;
+            color: var(--muted);
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            padding: 40px 0 56px;
+            color: #9fb8ffcc;
+        }
+
+        .foot-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(12, 1fr);
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            padding-top: 18px;
+        }
+
+        .foot-col {
+            grid-column: span 4;
+        }
+
+        .foot-col small {
+            display: block;
+            opacity: .85;
+        }
+
+        .tiny {
+            font-size: 12px;
+            color: #99a8ffbb;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            .card {
+                grid-column: span 12;
+            }
+
+            .step {
+                grid-column: span 12;
+            }
+
+            .table {
+                grid-template-columns: 1fr;
+            }
+
+            .foot-col {
+                grid-column: span 12;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="site">
+        <div class="container nav">
+            <div class="brand">
+                <div class="logo" aria-hidden="true">W</div>
+                <span>WikiPeek</span>
+            </div>
+            <nav>
+                <a class="ghost" href="#features">Features</a>
+                <a class="ghost" href="#how">How it works</a>
+                <a class="ghost" href="#faqs">FAQs</a>
+                <a class="cta" href="https://chromewebstore.google.com/detail/your-extension-id" target="_blank" rel="noopener">Add to Chrome</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <span class="kicker">Hover • Select • Learn</span>
+            <h1 class="hero-title">Instant Wikipedia previews — without leaving the page</h1>
+            <p class="sub">Two modes, lightning-fast results, and a sleek floating control hub. Perfect for studying, researching, and staying in the flow.</p>
+            <div class="hero-actions">
+                <a class="button primary" href="https://chromewebstore.google.com/detail/your-extension-id" target="_blank" rel="noopener">➕ Add to Chrome</a>
+                <a class="button" href="#screens">👀 See it in action</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+        <div class="container">
+            <div class="grid">
+                <div class="card">
+                    <span class="tag">Two Modes</span>
+                    <h3>Cursor & Underline</h3>
+                    <p>Select any text to preview in Cursor Mode, or enable Underline Mode to highlight key terms and hover for instant context.</p>
+                </div>
+                <div class="card">
+                    <span class="tag">Polished UI</span>
+                    <h3>Minimal, distraction-free previews</h3>
+                    <p>Clean tooltips with titles, summaries, and optional images. Designed to inform quickly without breaking your reading flow.</p>
+                </div>
+                <div class="card">
+                    <span class="tag">Fast</span>
+                    <h3>Prefetch & caching</h3>
+                    <p>Prefetch summaries and cache recent lookups for snappy results. No tab-hopping, no context switching.</p>
+                </div>
+                <div class="card">
+                    <span class="tag">Customizable</span>
+                    <h3>Shortcuts & settings</h3>
+                    <p>Tune hover delay, toggle images, and switch modes instantly via keyboard: <b>Alt + C</b> (Cursor) / <b>Alt + U</b> (Underline).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section id="how">
+        <div class="container">
+            <h2 style="margin:0 0 14px; letter-spacing:-.3px;">How it works</h2>
+            <p class="sub" style="text-align:left; max-width:800px">WikiPeek integrates unobtrusively into any webpage. Use Cursor Mode for targeted lookups or Underline Mode for ambient context while you read.</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <h3>Install & pin</h3>
+                    <p>Click <em>Add to Chrome</em>, then pin WikiPeek in your toolbar for quick access.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <h3>Choose a mode</h3>
+                    <p>Default is <b>Cursor Mode</b>. Switch anytime: <span class="kbd">Alt</span> + <span class="kbd">C</span> / <span class="kbd">U</span>.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <h3>Hover or select</h3>
+                    <p>Hover highlighted terms in Underline Mode, or select any text in Cursor Mode to see a concise Wikipedia preview.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Shortcuts -->
+    <section id="shortcuts">
+        <div class="container">
+            <h2 style="margin:0 0 14px; letter-spacing:-.3px;">Keyboard shortcuts</h2>
+            <div class="table" role="table" aria-label="Keyboard Shortcuts">
+                <div class="row" role="row">
+                    <div class="cell" role="cell"><span class="kbd">Alt</span> + <span class="kbd">C</span></div>
+                    <div class="cell" role="cell">Switch to Cursor Mode</div>
+                </div>
+                <div class="row" role="row">
+                    <div class="cell" role="cell"><span class="kbd">Alt</span> + <span class="kbd">U</span></div>
+                    <div class="cell" role="cell">Switch to Underline Mode</div>
+                </div>
+                <div class="row" role="row">
+                    <div class="cell" role="cell"><span class="kbd">Esc</span></div>
+                    <div class="cell" role="cell">Close preview / unpin</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQs -->
+    <section id="faqs">
+        <div class="container">
+            <h2 style="margin:0 0 14px; letter-spacing:-.3px;">FAQs</h2>
+            <div class="faq" role="region" aria-label="Frequently Asked Questions">
+                <details>
+                    <summary><span class="chev">▶</span>Is WikiPeek free?</summary>
+                    <p>Yes. WikiPeek uses Wikipedia content and is free to use. If we add optional pro features in the future, the free core will remain.</p>
+                </details>
+                <details>
+                    <summary><span class="chev">▶</span>Does it work on any site?</summary>
+                    <p>Almost everywhere. Some apps with heavy custom editors may limit selection, but Cursor Mode typically works across blogs, docs, forums, and news sites.</p>
+                </details>
+                <details>
+                    <summary><span class="chev">▶</span>How do I switch modes?</summary>
+                    <p>Use the popup, the floating control hub, or keyboard shortcuts: <b>Alt + C</b> for Cursor Mode, <b>Alt + U</b> for Underline Mode.</p>
+                </details>
+                <details>
+                    <summary><span class="chev">▶</span>What data do you collect?</summary>
+                    <p>None for tracking or advertising. We store minimal local settings (like your chosen mode) using Chrome storage. See the Privacy section below.</p>
+                </details>
+                <details>
+                    <summary><span class="chev">▶</span>Why is my preview missing images?</summary>
+                    <p>Some Wikipedia entries don’t have a thumbnail, or you may have images toggled off in settings. You can switch that on in the popup or control hub.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy -->
+    <section id="privacy">
+        <div class="container">
+            <h2 style="margin:0 0 14px; letter-spacing:-.3px;">Privacy & permissions</h2>
+            <p class="sub" style="text-align:left; max-width:800px">
+                WikiPeek runs locally in your browser to render previews and highlight terms. We request host access to read the text you select and to insert the tooltip UI; we do not collect browsing history or personal data. Settings like your preferred mode are stored using Chrome’s local storage.
+            </p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section>
+        <div class="container" style="text-align:center;">
+            <h2 style="margin:0 0 10px; letter-spacing:-.3px;">Ready to read smarter?</h2>
+            <p style="margin-bottom:18px; text-align: center;">Add WikiPeek to Chrome and get instant context anywhere on the web.</p>
+            <a class="button primary" href="https://chromewebstore.google.com/detail/your-extension-id" target="_blank" rel="noopener">➕ Add to Chrome</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container foot-grid">
+            <div class="foot-col">
+                <div class="brand">
+                    <div class="logo">W</div><span>WikiPeek</span>
+                </div>
+                <small class="tiny">© <span id="year"></span> WikiPeek. Not affiliated with Wikipedia or the Wikimedia Foundation.</small>
+            </div>
+            <div class="foot-col">
+                <small class="tiny"><a href="#privacy">Privacy</a> • <a href="#faqs">FAQs</a> • <a href="#features">Features</a></small>
+            </div>
+            <div class="foot-col" style="text-align:right;">
+                <small class="tiny">Made for productivity, learning, and flow.</small>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // smooth anchor scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                const id = a.getAttribute('href').slice(1);
+                const el = document.getElementById(id);
+                if (el) {
+                    e.preventDefault();
+                    el.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        // current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
